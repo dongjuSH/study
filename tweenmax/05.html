@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>greensock</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/TweenMax.min.js"></script>
+    <style>
+        canvas {display:block;}
+    </style>
+</head>
+<body>
+    <script>
+        const backgroundColor = 0x000000;
+
+        var renderCalls = [];
+        function render () {
+            requestAnimationFrame( render );
+            renderCalls.forEach((callback)=>{ callback(); });
+        }
+        render();
+
+        /*////////////////////////////////////////*/
+
+        var scene = new THREE.Scene();
+        scene.fog = new THREE.Fog(backgroundColor, 30, 300);
+
+        var camera = new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 0.1, 1000 );
+        scene.add( camera );
+        camera.position.set(12, 9, 12);
+        camera.lookAt(new THREE.Vector3(0,0,0));
+
+        var renderer = new THREE.WebGLRenderer( { antialias: true } );
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        renderer.setClearColor( backgroundColor );
+
+        window.addEventListener( 'resize', function () {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize( window.innerWidth, window.innerHeight );
+        }, false );
+
+        document.body.appendChild( renderer.domElement);
+
+        function renderScene(){ renderer.render( scene, camera ); }
+        renderCalls.push(renderScene);
+
+
+        function alphaMap(){
+            var canvas = document.createElement('canvas'),
+                ctx = canvas.getContext('2d'),
+                width = canvas.width = 128,
+                height = canvas.height = 128;
+
+            ctx.fillStyle = '#FFF';
+            ctx.fillRect(0, 0, width, height);
+            ctx.globalAlpha = 0.8;
+            ctx.fillStyle = '#000';
+            ctx.fillRect(1, 1, width - 2, height - 2);
+
+            //let sprite =
+            var textureLoader = new THREE.TextureLoader();
+            var texture = textureLoader.load(canvas.toDataURL());
+            return texture;
+        }
+
+        var tex = alphaMap();
+        tex.magFilter = THREE.NearestFilter;
+        tex.wrapS = THREE.ClampToEdgeWrapping;
+        tex.wrapT = THREE.ClampToEdgeWrapping;
+        tex.anisotropy = 2;
+        //tex.repeat.y = 2;
+
+        var geo = new THREE.BoxGeometry(1,1,1);
+        var mat = new THREE.MeshBasicMaterial({
+            depthTest: false,
+            depthWrite: false,
+            transparent: true,
+            alphaMap: tex,
+            opacity: 0.95,
+            side: THREE.DoubleSide
+        });
+
+        var cube = new THREE.Mesh(geo, mat);
+
+        cube.material.color.setHSL(0, 1.0, 0.6);
+
+        var cubes = new THREE.Group();
+
+        for (var i = 0, total = 8; i < total; i++) {
+            var clone = cube.clone();
+            clone.material = clone.material.clone();
+            clone.material.color.offsetHSL(
+                0.15 * (i / total),
+                0,
+                0.15 * (i / total)
+            );
+            clone.scale.set(
+                1 - 0.9 * (i/total),
+                1, // + 0.6 * (i/total),
+                1 - 0.9 * (i/total)
+            );
+            cubes.add(clone);
+        }
+
+        scene.add(cubes);
+
+
+        var _gsScope = (typeof module !== "undefined" && module.exports && typeof global !== "undefined") ? global : this || window;
+        (_gsScope._gsQueue || (_gsScope._gsQueue = [])).push(function () {
+            "use strict";
+            var _xyzContexts = "position,scale,rotation".split(","),
+                _contexts = {x:"position", y:"position", z:"position"},
+                _DEG2RAD = Math.PI / 180,
+                _visibleSetter = function(target, start, end) {
+                    var time = end ? 0 : 0.999999999;
+                    return function(ratio) {
+                        var value = (ratio > time) ? end : start;
+                        if (target.visible !== value) {
+                            target.visible = value;
+                            target.traverse(function (child) {
+                                child.visible = value;
+                            });
+                        }
+                    };
+                },
+                _addFuncPropTween = function(tween, func) {
+                    var proxy = {setRatio: func},
+                        backward = !!tween.vars.runBackwards,
+                        pt = {_next:tween._firstPT, t:proxy, p:"setRatio", s:backward ? 1 : 0, f:1, pg:0, n:"setRatio", m:0, pr:0, c:backward ? 0 : 1};
+                    tween._firstPT = pt;
+                    if (pt._next) {
+                        pt._next._prev = pt;
+                    }
+                    return pt;
+                },
+                _degreesToRadians = function(value) {
+                    return (typeof(value) === "string" && value.charAt(1) === "=") ? value.substr(0, 2) + (parseFloat(value.substr(2)) * _DEG2RAD) : value * _DEG2RAD;
+                }, i, p;
+            for (i = 0; i < _xyzContexts.length; i++) {
+                p = _xyzContexts[i];
+                _contexts[p + "X"] = p;
+                _contexts[p + "Y"] = p;
+                _contexts[p + "Z"] = p;
+            }
+            var ThreePlugin = _gsScope._gsDefine.plugin({
+                propName: "three",
+                priority: 0,
+                API: 2,
+                version: "0.0.2",
+                init: function (target, values, tween, index) {
+                    var context, axis, value, p, i, m;
+                    for (p in values) {
+                        context = _contexts[p];
+                        value = values[p];
+                        if (typeof(value) === "function") {
+                            value = value(index || 0, target);
+                        }
+                        if (context) {
+                            i = p.charAt(p.length-1).toLowerCase();
+                            axis = (i.indexOf("x") !== -1) ? "x" : (i.indexOf("z") !== -1) ? "z" : "y";
+                            this._addTween(target[context], axis, target[context][axis], (p.indexOf("rotation") !== -1) ? _degreesToRadians(value) : value, p);
+                        } else if (p === "scale") {
+                            this._addTween(target[p], "x", target[p].x, value, p + "X");
+                            this._addTween(target[p], "y", target[p].y, value, p + "Y");
+                            this._addTween(target[p], "z", target[p].z, value, p + "Z");
+                        } else if (p === "opacity") {
+                            m = (target.material.length) ? target.material : [target.material];
+                            i = m.length;
+                            while (--i > -1) {
+                                m[i].transparent = true;
+                                this._addTween(m[i], p, m[i][p], value, p);
+                            }
+                        } else if (p === "visible") {
+                            if (target.visible !== value) {
+                                _addFuncPropTween(tween, _visibleSetter(target, target.visible, value));
+                            }
+                        } else {
+                            this._addTween(target, p, target[p], value, p);
+                        }
+                        this._overwriteProps.push(p);
+                    }
+                    return true;
+                }
+            });
+
+        }); if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); }
+
+        /* ////////////////////////////////////////////////////////////////////////// */
+
+        var tl = new TimelineMax({
+            repeat: -1,
+            repeatDelay: 0.5,
+            yoyo: true
+        });
+
+        tl.timeScale(0.8);
+
+        tl.staggerTo(cubes.children, 5, {
+            three: {
+                rotationZ: Math.PI * 2,
+                rotationX: Math.PI * -2,
+            },
+            ease:  Expo.easeInOut,
+            cycle:{
+                delay: function(i, target) {
+                    return 0.5 * Power4.easeOut.getRatio(i / cubes.children.length);
+                }
+            }
+        }, 0, 0);
+
+        tl.staggerTo(cubes.children, 1, {
+            ease:  Expo.easeInOut,
+            repeat: 1,
+            repeatDelay: 2,
+            yoyo: true,
+            cycle:{
+                three: function(i){
+                    return {
+                        scaleY: 1 - 0.9 * (i / cubes.children.length)
+                    };
+                },
+                delay: function(i, target) {
+                    return 0.5 * Power4.easeOut.getRatio(i / cubes.children.length);
+                }
+            }
+        }, 0, 0);
+
+        tl.to(tex.offset, 1.25, {
+            x: 1,
+            y: 1,
+            ease: Power2.easeIn
+        },2);
+
+
+
+        tl.to(cubes.rotation, 5, {
+            x: Math.PI * 2,
+            z: Math.PI * -2,
+            ease: Expo.easeInOut,
+        }, 0);
+
+
+        GSDevTools.create({
+            loop: true,
+            globalSync: true,
+            minimal: false
+        });
+    </script>
+</body>
+</html>

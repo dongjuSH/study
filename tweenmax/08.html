@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TweenMax</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
+    <style>
+        #box1 {width:100px; height:100px; background-color:#5e54ed;}
+        #box2 {width:100px; height:100px; background-color:#23a6d5;}
+        #box3 {width:100px; height:100px; background-color:#23d5ab;}
+        #box3 {width:100px; height:100px; background-color:#292a2e;}
+
+        body {
+            margin: 10px;
+        }
+
+        .box {
+            display: block;
+            width:50px;
+            height:50px;
+            border-radius:50%;
+        }
+
+        .green {
+            background-color:green;
+        }
+
+        .orange {
+            background-color:orange;
+        }
+
+        #output {
+            color: #222;
+        }
+    </style>
+</head>
+<body>
+    <div id="box1"></div>
+    <div id="box2"></div>
+    <div id="box3"></div>
+    <div id="box4"></div>
+
+    <div class="box green"></div>
+    <div class="box orange"></div>
+    <div id="output"></div>
+
+    <script>
+        TweenMax.from("#box1",1.5,{opacity:0,delay:2});
+        TweenMax.fromTo("#box2",2,{x:0},{x:100});
+        TweenMax.staggerTo("#box3",2,{x:"100",y:"+=150",opacity:.5},1);
+        TweenMax.staggerFrom("#box4",1,{y:300},.2);
+
+        var output = document.querySelector("#output");
+
+        TweenMax.to(".green",2,{
+            x: 300,
+            onStart: showMessage,
+            onStartParams: ["the green div has started to move"],
+            onComplete: showMessage,
+            onCompleteParams: ["the green div is done moving"],
+            delay: 1
+        });
+        TweenMax.to(".orange",2,{
+            x: 300,
+            onStart: showMessage,
+            onStartParams: ["the orange div has started to move"],
+            onComplete: showMessage,
+            onCompleteParams: ["the orange div is done moving"],
+            delay: 5
+        });
+
+        function showMessage(message) {
+            output.innerHTML += message + "</br>";
+        }
+    </script>
+</body>
+</html>

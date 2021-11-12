@@ -1,0 +1,18 @@
+#bg {height:100vh; background-color:grey;}
+#container {width:70vw; height:70vh; max-width:80vw; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);}
+.menu {width:150px; height:150px; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); border:15px solid #000; border-radius:50%; transition:.2s ease;}
+
+.menu-animated {animation:borderColor 3s alternate infinite; border-radius:0%}
+@keyframes borderColor {
+    0% {border:15px solid #85ccdd;}
+    12.5% {border-top: solid 15px #85ccdd;}
+    25% {border-top: solid 15px #85ccdd; border-right: solid 15px #85ccdd;}
+    37.5% {border-top: solid 15px #85ccdd; border-right: solid 15px #85ccdd; border-bottom: solid 15px #85ccdd;}
+    50% {border-top: solid 15px #85ccdd; border-right: solid 15px #85ccdd; border-bottom: solid 15px #85ccdd; border-left: solid 15px #85ccdd;}
+    62.5% {border-top: solid 15px #ff6c5d;}
+    75% {border-top: solid 15px #ff6c5d; border-right: solid 15px #ff6c5d;}
+    87.5% {border-top: solid 15px #ff6c5d; border-right: solid 15px #ff6c5d; border-left: solid 15px #ff6c5d;}
+    100% {border-top: solid 15px #ff6c5d; border-right: solid 15px #ff6c5d; border-left: solid 15px #ff6c5d; border-bottom: solid 15px #ff6c5d;}
+}
+
+.bg-animated {background:linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5 #23d5ab); background-size:400% 400%}

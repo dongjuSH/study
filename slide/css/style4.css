@@ -1,0 +1,29 @@
+body {font: normal 18px/1.5 "Helvetica Neue", sans-serif;}
+.slide_wrap {position: relative; width: 100%;}
+.left, .right {position: absolute; z-index: 2000; top: 20%; color: white; background: black; padding: 10px;}
+.left {left: 10%;}
+.right {right: 10%;}
+.flex_wrapper {display: flex; height: 100vh; position: relative;}
+.flex_wrapper a {position: relative; flex: 1; background-size: cover; background-repeat: no-repeat; transition: flex .4s;}
+/* flex 1 1 0 : flex-grow, flex-shrink, flex-basis */
+
+.flex_wrapper a.one {background-image: url(http://placekitten.com/1200/800);}
+.flex_wrapper a.two {background-image: url(https://picsum.photos/200/300?random=1);}
+.flex_wrapper a.three {background-image: url(https://picsum.photos/200/300?random=2);}
+.flex_wrapper a.four {background-image: url(https://picsum.photos/200/300?random=3);}
+.flex_wrapper a.five {background-image: url(https://picsum.photos/200/300?random=4);}
+.flex_wrapper a.active {flex: 3;}
+.flex_wrapper .overlay {padding: 0 10px; position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: flex; align-items: center; justify-content: center; transition: background-color .4s;}
+.flex_wrapper a.active .overlay {background-color: rgba(0,0,0,.5);}
+.flex_wrapper a .overlay .overlay-inner * {color: #fff; text-align: center; opacity: 0;}
+.flex_wrapper a .overlay .overlay-inner h2 {transform: translateY(-60px);}
+.flex_wrapper a .overlay .overlay-inner p {transform: translateY(60px);}
+.flex_wrapper a.active .overlay .overlay-inner * {transform: none; opacity: 1; transition: all .3s .3s;}
+
+@media screen and (max-width:800px) {
+    .flex_wrapper {flex-direction: column;}
+    .flex_wrapper a.active {flex: 1;}
+    .flex_wrapper a.active .overlay {background-color: transparent;}
+    .flex_wrapper a .overlay .overlay-inner h2, .flex_wrapper a .overlay .overlay-inner p {opacity: 1; transform: none;}
+    .left, .right {display: none;}
+}

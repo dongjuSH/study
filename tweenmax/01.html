@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>tweenmax1</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/TweenMax.min.js"></script>
+    <style>
+        #box1 {width:300px; height:300px; background-color:red; position:relative; top:0; left:0;}
+    </style>
+
+</head>
+<body>
+    <div id="box1"></div>
+    <button type="button" class="play">play</button>
+    <button type="button" class="pause">pause</button>
+    <button type="button" class="reverse">reverse</button>
+    <button type="button" class="restart">restart</button>
+
+    <script>
+        var $El = document.getElementById("box1"),
+            $playBtn = document.querySelector('.play'),
+            $pauseBtn = document.querySelector('.pause'),
+            $reverseBtn = document.querySelector('.reverse'),
+            $restartBtn = document.querySelector('.restart');
+
+        var tween=TweenLite.to($El,10,{
+            left:"800px",
+            paused:true,
+            onComplete:myFuction,
+            ease:Power4.easeOut
+        });
+        function myFuction(){alert("완료");}
+
+        $El.onclick=function (){tween.resume();}
+        $playBtn.onclick = function (){tween.play();};
+        $pauseBtn.onclick = function (){tween.pause();};
+        $restartBtn.onclick = function (){tween.restart();};
+        $reverseBtn.onclick = function (){tween.reverse();};
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>tweenmax3</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js"></script>
+    <style>
+        button {display:inline-block; background-color:#e1e1e1; border:1px solid #000; margin-right:5px;}
+        .box {position:relative; top:0; left:0; width:30px; height:30px;}
+        .box1 {background-color:#5e54ed;}
+        .box2 {background-color:#5e54ed;}
+        .box3 {background-color:#5e54ed;}
+    </style>
+    <script>
+        $(function (){
+            const $btnPlay = $("button.play"),
+                $btnReset = $("button.reset"),
+                $normalBox = $(".box1"),
+                $tweenBox = $(".box2"),
+                $btnMove = $("button.move"),
+                $moveBox = $(".box3");
+            let myTween = null;
+            var myBox = new TimelineLite();
+
+            $btnPlay.click(function (){
+                $normalBox.animate({left:"80%"}, 1500,"linear");
+                myTween = new TweenMax.to($tweenBox, 1.5, {
+                    left:"80%",
+                    backgroundColor:"#f00",
+                    repeat:-1,
+                    repeatDelay:1,
+                    yoyo:true,
+                    ease:Bounce.easeInOut});
+                myTween.resume();
+            });
+            $btnReset.click(function (){
+                $normalBox.stop().css("left","0");
+                myTween.kill();
+                $tweenBox.css("left",0);
+            });
+            $btnMove.click(function (){
+                myBox.to($moveBox, 1, {backgroundColor: "#71bf43"})
+                .to($moveBox, 1, {left:300})
+                .to($moveBox, 2, {left:270, scale:3})
+            });
+
+            var obj = {name:"HBS"};
+            $(".txt").text(obj.name);
+            $(".txtBtn").on("click",function (){
+                TweenLite.to(obj, 2, {name:"Hello~",repeat:1});
+                setTimeout(function (){
+                    $(".txt").text(obj.name);
+                },2000)
+            });
+        });
+    </script>
+</head>
+<body>
+    <button type="button" class="play">Play</button>
+    <button type="button" class="reset">Reset</button>
+    <h4>TweenMax 사용</h4>
+    <div class="box box2"></div>
+    <h4>jQuery 사용</h4>
+    <div class="box box1"></div>
+    <button type="button" class="move">Move</button>
+    <h4>TImeLineLite</h4>
+    <div class="box box3"></div>
+    <p class="txt"></p>
+    <button type="button" class="txtBtn">2초 글자 변경</button>
+</body>
+</html>

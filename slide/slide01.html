@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>slide</title>
+    <style>
+        html,body {margin:0; padding:0;}
+        ul {list-style:none;}
+        a {text-decoration:none; color:#333}
+        #wrap {margin-top:60px;}
+        .contents {position:relative;}
+        .slide {position:relative; left:50%; transform:translateX(-50%); width:800px; height:600px; overflow:hidden; padding:0;}
+        .slide::after {content:""; display:block; clear:both;}
+        .slide li {width:800px; height:600px; float:left;  position:absolute; top:0; left:100%; text-align:center; line-height:600px;}
+        .slide li:first-child {left:0; background-color:red;}
+        .slide li:nth-of-type(2) {background-color:yellow;}
+        .slide li:nth-of-type(3) {background-color:green;}
+        .slide li:nth-of-type(4) {background-color:blue;}
+        .slide li:nth-of-type(5) {background-color:skyblue;}
+        .slide li a {font-size:24px; color:inherit; font-weight:bold;}
+        .slide_btn button {width:40px; height:40px; position:absolute; top:50%; transform: translateY(-50%); background:none; border:none; cursor:pointer;}
+        .slide_btn .slide_prev {left:200px;}
+        .slide_btn .slide_next {right:200px;}
+        .slide_indicator {position:absolute; bottom:-80px; left:50%; transform:translateX(-50%);}
+        .slide_indicator::after {content:""; display:block; clear:both;}
+        .slide_indicator button {width:10px; height:10px; float:left; display:block; margin:0 5px; background-color:#333; border-radius:5px; padding:0; border:none; cursor:pointer;}
+        .slide_indicator button.on {background-color:#f00;}
+    </style>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+</head>
+<body>
+    <div id="wrap">
+        <div class="contents">
+            <ul class="slide">
+                <li><a href="#">slide01</a></li>
+                <li><a href="#">slide02</a></li>
+                <li><a href="#">slide03</a></li>
+                <li><a href="#">slide04</a></li>
+                <li><a href="#">slide05</a></li>
+            </ul>
+            <div class="slide_btn">
+                <button type="button" class="slide_prev">이전</button>
+                <button type="button" class="slide_next">다음</button>
+            </div>
+            <div class="slide_indicator"></div>
+        </div>
+    </div>
+
+    <script>
+        var $contents = $(".contents"),
+            $slideWrap = $contents.find(".slide"),
+            $slide = $slideWrap.find("li"),
+            $prev = $contents.find(".slide_prev"),
+            $next = $contents.find(".slide_next"),
+            $indicator = $contents.find(".slide_indicator"),
+            current = 0,
+            check = false;
+
+        function move(tg,start,end){
+            tg.css("left",start).stop().animate({left:end},500);
+        }
+        function slide_prev(per){
+            var prev_slide=$slide.eq(current),
+                prev_indicator=$indicator.find("button").eq(current);
+            prev_indicator.removeClass("on");
+            move(prev_slide,0,per);
+        }
+        function slide_next(per){
+            var next_slide=$slide.eq(current),
+                next_indicator=$indicator.find("button").eq(current);
+            next_indicator.addClass("on");
+            move(next_slide,per,0);
+        }
+        function move_prev(i){
+            if(current===i) return;
+            var currEl=$slide.eq(current),
+                nextEl=$slide.eq(i);
+            move(currEl,0,"100%");
+            move(nextEl,"-100%",0);
+            current=i;
+        }
+        function move_next(i){
+            if(current===i) return;
+            var currEl=$slide.eq(current),
+                nextEl=$slide.eq(i);
+            move(currEl,0,"-100%");
+            move(nextEl,"100%",0);
+            current=i;
+        }
+        function indicator(){
+            for(i=1; i<=$slide.size(); i++){
+                $indicator.append("<button type=\"button\"></button>");
+            }
+            $indicator.find("button").eq(0).addClass("on");
+            if ($slide.size()<=1){
+                $indicator.css("display","none");
+                check=true;
+            }
+        }
+
+        indicator();
+        $prev.click(function (){
+            if(check===false){
+                slide_prev("100%");
+                current--;
+                if(current===-$slide.size()){current=0;}
+                slide_next("-100%");
+                check=true;
+                setTimeout(function (){check=false;},600);
+            }
+        });
+        $next.click(function (){
+            if(check===false){
+                slide_prev("-100%");
+                current++;
+                if(current===$slide.size()){current=0;}
+                slide_next("100%");
+                check=true;
+                setTimeout(function (){check=false;},600);
+            }
+        });
+        $indicator.find("button").click(function (){
+            var target=$(this),
+                i=target.index();
+            $indicator.find("button").removeClass("on");
+            target.addClass("on");
+        });
+    </script>
+</body>
+</html>

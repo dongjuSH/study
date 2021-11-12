@@ -1,0 +1,11 @@
+* {margin: 0; padding: 0;}
+body {background: #eee; font-family: Arial, Helvetica, sans-serif; font-size: 20px; padding: 25px; overflow: auto;}
+#container li {margin-bottom: 10px;}
+#roundButton {background: #96d9ff; margin-bottom: 20px; width: 50px; height: 50px; border-radius: 50%; border: 10px solid #0065a6; outline: none; transition: all .2s cubic-bezier(0,1.26,.8,1.28);}
+#roundButton:hover {background: #96d9ff; cursor: pointer; border-color: #003557; transform: scale(1.2);}
+#roundButton:active {border-color: #003557; background: #fff;}
+#flyoutMenu {width: 100vw; height: 100vh; background: #ffe600; position: fixed; top: 0; left: 0; transform: translate3d(-100vw,0,0); transition: transform .3s cubic-bezier(0,.52,0,1); overflow: hidden; z-index: 1000;}
+#flyoutMenu.show {transform: translate3d(0vw,0,0);}
+#flyoutMenu h2 a {color: #333; margin-left: 15px; text-decoration: none;}
+#flyoutMenu h2 a:hover {text-decoration: underline;}
+#container {line-height: 2;}

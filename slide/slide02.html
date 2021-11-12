@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>slide02</title>
+    <style>
+        html,body {margin:0; padding:0;}
+        ul {list-style:none;}
+        a {text-decoration:none; color:#333}
+        .contents {position:relative;}
+        .slide_wrap {width:800px; margin:60px auto 0;  overflow:hidden;}
+        .slide {width:4000px; text-align:center; position:relative; padding:0;}
+        .slide::after {content:""; display:block; clear:both;}
+        .slide li {width:800px; height:600px; line-height:600px; float:left; background-color:skyblue;}
+        .slide li.slide01 {background-color:red;}
+        .slide li.slide02 {background-color:green;}
+        .slide li.slide03 {background-color:blue;}
+        .slide li.slide04 {background-color:yellow;}
+        .slide li.slide05 {background-color:skyblue;}
+        .slide li a {font-size:24px; color:inherit; font-weight:bold;}
+        .slide_btn button {width:40px; height:40px; position:absolute; top:50%; transform: translateY(-50%); background:none; border:none; cursor:pointer;}
+        .slide_btn .slide_prev {left:200px;}
+        .slide_btn .slide_next {right:200px;}
+        .slide_indicator {position:absolute; bottom:-80px; left:50%; transform:translateX(-50%);}
+        .slide_indicator::after {content:""; display:block; clear:both;}
+        .slide_indicator button {width:10px; height:10px; float:left; display:block; margin:0 5px; background-color:#333; border-radius:5px; padding:0; border:none; cursor:pointer;}
+        .slide_indicator button.on {background-color:#f00;}
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+</head>
+<body>
+    <div id="wrap">
+        <div class="contents">
+            <div class="slide_wrap">
+                <ul class="slide">
+                    <li class="slide01"><a href="#">slide01</a></li>
+                    <li class="slide02"><a href="#">slide02</a></li>
+                    <li class="slide03"><a href="#">slide03</a></li>
+                    <li class="slide04"><a href="#">slide04</a></li>
+                    <li class="slide05"><a href="#">slide05</a></li>
+                </ul>
+            </div>
+            <div class="slide_btn">
+                <button type="button" class="slide_prev">이전</button>
+                <button type="button" class="slide_next">다음</button>
+            </div>
+            <div class="slide_indicator"></div>
+        </div>
+    </div>
+
+    <script>
+        var $contents = $(".contents"),
+            $moveSlide = $contents.find(".slide"),
+            $slide = $moveSlide.find("li"),
+            slideWidth = $slide.width(),
+            $prevBtn = $contents.find(".slide_prev"),
+            $nextBtn = $contents.find(".slide_next"),
+            $indicator = $contents.find(".slide_indicator"),
+            current = 0,
+            check = false;
+
+        function left(){
+            $moveSlide.find("li:last").insertBefore($moveSlide.find("li:first"));
+            $moveSlide.css({left:-slideWidth}).stop().animate({left:0},500);
+        }
+        function right(){
+            $moveSlide.animate({left:-slideWidth},500,function (){
+                $(this).children("li:first").insertAfter($(this).children("li:last"));
+                $(this).css({left:0});
+            })
+        }
+        function indicator(){
+            for(var i=1; i<=$slide.length; i++){
+                $indicator.append("<button type=\"button\"></button>");
+            }
+            $indicator.find("button").eq(0).addClass("on");
+            if ($slide.length<=1){
+                $indicator.css("display","none");
+                check=true;
+            }
+        }
+
+        indicator();
+        $prevBtn.click(function (){
+            if(check===false) {
+                left();
+                check=true;
+                setTimeout(function (){check=false;},600);
+            }
+        });
+        $nextBtn.click(function (){
+            if(check===false) {
+                right();
+                check=true;
+                setTimeout(function (){check=false;},600);
+            }
+        });
+        $indicator.find("button").click(function (){
+            var target=$(this),
+                i=target.index();
+            $indicator.find("button").removeClass("on");
+            target.addClass("on");
+        });
+    </script>
+</body>
+</html>
