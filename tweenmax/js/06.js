@@ -10,6 +10,7 @@ $(function (){
 
     var tl = new TimelineLite({paused:true});
 
+
     tl.to(panels, .5, {width: "50%"})
         .to(open_btn, .5, {opacity:0, visibility: "hidden", "z-index":0}, "-=.5")
         .to(data_content, .5, {y:0, opacity: 1})
